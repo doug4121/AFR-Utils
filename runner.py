@@ -253,7 +253,8 @@ if __name__ == "__main__":
     except TimeoutError:
         update_status(
             accessKey, 
-            secretKey, 
+            secretKey,
+            region,
             tableName, 
             imageId, 
             'ERROR_EC2_TIMEOUT')
@@ -261,7 +262,8 @@ if __name__ == "__main__":
     except FileNotFoundError:
         update_status(
             accessKey, 
-            secretKey, 
+            secretKey,
+            region,
             tableName, 
             imageId, 
             'ERROR_EC2_FILE_NOT_FOUND')
@@ -269,7 +271,8 @@ if __name__ == "__main__":
     except:
         update_status(
             accessKey, 
-            secretKey, 
+            secretKey,
+            region,
             tableName, 
             imageId, 
             'ERROR_EC2_UNKNOWN')
