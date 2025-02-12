@@ -32,3 +32,6 @@ table.update_item(
         ':dtval': currentDateTime
         },
 )
+
+
+boto3.client('s3', region_name = region).download_file('afrinput', 'smallportrait.jpg', '/smallportrait.jpg')
