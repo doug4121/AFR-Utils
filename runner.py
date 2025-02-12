@@ -14,9 +14,6 @@ def main(
     downloadFilePath, 
     mode, 
     extension, 
-    accessKey, 
-    secretKey,
-    region,
     inputBucketName, 
     inputFileName, 
     outputBucketName, 
@@ -30,16 +27,11 @@ def main(
         image_paths = {downloadFilePath}       
 
         update_status(
-            accessKey, 
-            secretKey,
-            region,
             tableName, 
             imageId, 
             'PROCESSING')
         try:
-            s3client = get_s3_client(
-                accessKey, 
-                secretKey)
+            s3client = get_s3_client()
         except:
             raise
 
@@ -78,9 +70,6 @@ def main(
             raise
 
         update_status(
-            accessKey, 
-            secretKey,
-            region,
             tableName, 
             imageId, 
             'SUCCESS')
@@ -149,14 +138,10 @@ def upload_file(
     if not os.path.isfile(outputFilePath):
         raise FileNotFoundError
 
-def get_s3_client(
-    accessKey,
-    secretKey):
+def get_s3_client():
 
     return boto3.client(
-        's3', 
-        aws_access_key_id = accessKey, 
-        aws_secret_access_key = secretKey)
+        's3')
 
 def download_file(
     client,
@@ -173,17 +158,11 @@ def download_file(
         raise FileNotFoundError
 
 def update_status(
-        accessKey, 
-        secretKey,
-        region,
         tableName, 
         imageId, 
         status):
     dynamodb = boto3.resource(
-        'dynamodb', 
-        aws_access_key_id = accessKey, 
-        aws_secret_access_key = secretKey,
-        region_name = region)
+        'dynamodb')
     table = dynamodb.Table(tableName)
 
     currentDateTime = get_date_time()
@@ -219,29 +198,22 @@ if __name__ == "__main__":
         mode = sys.argv[2]
         extension = sys.argv[3]
 
-        accessKey = sys.argv[4]
-        secretKey = sys.argv[5]
-        region = sys.argv[6]
+        inputBucketName = sys.argv[4]
+        inputFileName = sys.argv[5]
 
-        inputBucketName = sys.argv[7]
-        inputFileName = sys.argv[8]
+        outputBucketName = sys.argv[6]
+        outputFilePath = sys.argv[7]
+        outputFileName = sys.argv[8]
 
-        outputBucketName = sys.argv[9]
-        outputFilePath = sys.argv[10]
-        outputFileName = sys.argv[11]
+        tableName = sys.argv[9]
+        imageId = sys.argv[10]
 
-        tableName = sys.argv[12]
-        imageId = sys.argv[13]
-
-        timeout_seconds = float(sys.argv[14])
+        timeout_seconds = float(sys.argv[11])
 
         main(
             downloadFilePath, 
             mode, 
             extension, 
-            accessKey, 
-            secretKey,
-            region,
             inputBucketName, 
             inputFileName, 
             outputBucketName, 
@@ -252,27 +224,18 @@ if __name__ == "__main__":
             timeout_seconds)
     except TimeoutError:
         update_status(
-            accessKey, 
-            secretKey,
-            region,
             tableName, 
             imageId, 
             'ERROR_EC2_TIMEOUT')
         raise
     except FileNotFoundError:
         update_status(
-            accessKey, 
-            secretKey,
-            region,
             tableName, 
             imageId, 
             'ERROR_EC2_FILE_NOT_FOUND')
         raise
     except:
         update_status(
-            accessKey, 
-            secretKey,
-            region,
             tableName, 
             imageId, 
             'ERROR_EC2_UNKNOWN')
