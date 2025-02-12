@@ -15,7 +15,8 @@ def main(
     mode, 
     extension, 
     accessKey, 
-    secretKey, 
+    secretKey,
+    region,
     inputBucketName, 
     inputFileName, 
     outputBucketName, 
@@ -30,7 +31,8 @@ def main(
 
         update_status(
             accessKey, 
-            secretKey, 
+            secretKey,
+            region,
             tableName, 
             imageId, 
             'PROCESSING')
@@ -77,7 +79,8 @@ def main(
 
         update_status(
             accessKey, 
-            secretKey, 
+            secretKey,
+            region,
             tableName, 
             imageId, 
             'SUCCESS')
@@ -171,14 +174,16 @@ def download_file(
 
 def update_status(
         accessKey, 
-        secretKey, 
+        secretKey,
+        region,
         tableName, 
         imageId, 
         status):
     dynamodb = boto3.resource(
         'dynamodb', 
         aws_access_key_id = accessKey, 
-        aws_secret_access_key = secretKey)
+        aws_secret_access_key = secretKey,
+        region_name = region)
     table = dynamodb.Table(tableName)
 
     currentDateTime = get_date_time()
@@ -216,25 +221,27 @@ if __name__ == "__main__":
 
         accessKey = sys.argv[4]
         secretKey = sys.argv[5]
+        region = sys.argv[6]
 
-        inputBucketName = sys.argv[6]
-        inputFileName = sys.argv[7]
+        inputBucketName = sys.argv[7]
+        inputFileName = sys.argv[8]
 
-        outputBucketName = sys.argv[8]
-        outputFilePath = sys.argv[9]
-        outputFileName = sys.argv[10]
+        outputBucketName = sys.argv[9]
+        outputFilePath = sys.argv[10]
+        outputFileName = sys.argv[11]
 
-        tableName = sys.argv[11]
-        imageId = sys.argv[12]
+        tableName = sys.argv[12]
+        imageId = sys.argv[13]
 
-        timeout_seconds = float(sys.argv[13])
+        timeout_seconds = float(sys.argv[14])
 
         main(
             downloadFilePath, 
             mode, 
             extension, 
             accessKey, 
-            secretKey, 
+            secretKey,
+            region,
             inputBucketName, 
             inputFileName, 
             outputBucketName, 
